@@ -60,7 +60,7 @@ const SimpleSelect = () => {
     const startTime = new Date().getTime();
     let updateData = "";
 
-    const prevStorage = JSON.parse(localStorage.getItem("user") || []);
+    const prevStorage = JSON.parse(localStorage.getItem("user")) || [];
     const currentData = { name: value, startTime: startTime };
 
     const objIndex = prevStorage.findIndex((obj) => obj.name === value);
