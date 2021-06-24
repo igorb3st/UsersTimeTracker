@@ -1,0 +1,33 @@
+{
+  "title": "Users List Time Tracker demo",
+  "devDependencies": {
+    "react-scripts": "latest"
+  },
+  "description": "https://github.com/igorb3st/UsersTimeTracker.git",
+  "dependencies": {
+    "react-dom": "latest",
+    "react": "latest",
+    "@material-ui/core": "latest",
+    "axios": "latest"
+  },
+  "name": "lviv-demo-task",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
