@@ -11,14 +11,14 @@ import axios from "axios";
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120
+    minWidth: 120,
   },
   selectEmpty: {
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
   },
   info: {
-    paddingTop: "100px"
-  }
+    paddingTop: "100px",
+  },
 }));
 
 function getStyles(name, personName, theme) {
@@ -26,7 +26,7 @@ function getStyles(name, personName, theme) {
     fontWeight:
       personName.indexOf(name) === -1
         ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium
+        : theme.typography.fontWeightMedium,
   };
 }
 
@@ -38,12 +38,11 @@ const SimpleSelect = () => {
   const [ users, setUser ] = useState([]);
 
   const msToTime = (s) => {
-
     // Pad to 2 or 3 digits, default is 2
     const pad = (n, z) => {
       z = z || 2;
-      return ('00' + n).slice(-z);
-    }
+      return ("00" + n).slice(-z);
+    };
 
     const ms = s % 1000;
     s = (s - ms) / 1000;
@@ -52,9 +51,8 @@ const SimpleSelect = () => {
     const mins = s % 60;
     const hrs = (s - mins) / 60;
 
-    return pad(hrs) + ':' + pad(mins) + ':' + pad(secs);
-  }
-
+    return pad(hrs) + ":" + pad(mins) + ":" + pad(secs);
+  };
 
   const handleChange = (event) => {
     const { value } = event.target;
@@ -62,30 +60,29 @@ const SimpleSelect = () => {
     const startTime = new Date().getTime();
     let updateData = "";
 
-    const prevStorage = JSON.parse(localStorage.getItem('user') || []);
+    const prevStorage = JSON.parse(localStorage.getItem("user") || []);
     const currentData = { name: value, startTime: startTime };
 
-    const objIndex = prevStorage.findIndex((obj => obj.name === value));
-    const rest = prevStorage.filter(obj => obj.name !== value);
+    const objIndex = prevStorage.findIndex((obj) => obj.name === value);
+    const rest = prevStorage.filter((obj) => obj.name !== value);
     if (objIndex !== -1) {
-      updateData = [ ...rest, { ...prevStorage[ objIndex ], nextTime: prevStorage[ objIndex ].nextTime = startTime } ];
-      console.log("New Array: ", updateData);
+      updateData = [
+        ...rest,
+        {
+          ...prevStorage[ objIndex ],
+          nextTime: (prevStorage[ objIndex ].nextTime = startTime),
+        },
+      ];
+
       const workTime = prevStorage[ objIndex ].startTime - startTime;
-      console.log(msToTime(workTime));
+
       setPersonTime(msToTime(workTime));
-    }
-    else {
+    } else {
       updateData = [ ...prevStorage, currentData ];
     }
 
-    // const newData = [ ...prevStorage, objIndex === -1 ? currentData : startTime: prevStorage[ objIndex ].startTime = startTime ];
-    localStorage.setItem(
-      "user",
-      JSON.stringify(value ? updateData : "")
-    );
+    localStorage.setItem("user", JSON.stringify(value ? updateData : ""));
   };
-
-
 
   useEffect(() => {
     const url = `https://jsonplaceholder.typicode.com/users`;
@@ -122,12 +119,10 @@ const SimpleSelect = () => {
         <Typography className={ info } gutterBottom>
           Name: { personName }
         </Typography>
-        <Typography gutterBottom>
-          Work Time: { personTime }
-        </Typography>
+        <Typography gutterBottom>Work Time: { personTime }</Typography>
       </FormControl>
     </div>
   );
-}
+};
 
 export default SimpleSelect;
