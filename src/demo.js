@@ -37,46 +37,43 @@ const SimpleSelect = () => {
   const [ personTime, setPersonTime ] = useState();
   const [ users, setUser ] = useState([]);
 
-  const msToTime = (s) => {
-    // Pad to 2 or 3 digits, default is 2
-    const pad = (n, z) => {
-      z = z || 2;
-      return ("00" + n).slice(-z);
-    };
+  const msToTime = (duration) => {
+    const seconds = parseInt((duration / 1000) % 60),
+      minutes = parseInt((duration / (1000 * 60)) % 60),
+      hours = parseInt((duration / (1000 * 60 * 60)) % 24);
 
-    const ms = s % 1000;
-    s = (s - ms) / 1000;
-    const secs = s % 60;
-    s = (s - secs) / 60;
-    const mins = s % 60;
-    const hrs = (s - mins) / 60;
-
-    return pad(hrs) + ":" + pad(mins) + ":" + pad(secs);
-  };
+    return `${hours}hrs :${minutes}min :${seconds}sec `;
+  }
 
   const handleChange = (event) => {
     const { value } = event.target;
     setPersonName(value);
-    const startTime = new Date().getTime();
+    const currentTime = new Date().getTime();
     let updateData = "";
 
     const prevStorage = JSON.parse(localStorage.getItem("user")) || [];
-    const currentData = { name: value, startTime: startTime };
+    const currentData = { name: value, time: currentTime };
 
     const objIndex = prevStorage.findIndex((obj) => obj.name === value);
     const rest = prevStorage.filter((obj) => obj.name !== value);
+
     if (objIndex !== -1) {
       updateData = [
         ...rest,
         {
           ...prevStorage[ objIndex ],
-          nextTime: (prevStorage[ objIndex ].nextTime = startTime),
+          nextTime: currentTime,
         },
       ];
+      if (prevStorage[ objIndex ]?.nextTime) {
+        const workTime = Math.abs(prevStorage[ objIndex ].time - currentTime);
 
-      const workTime = prevStorage[ objIndex ].startTime - startTime;
+        setPersonTime(msToTime(workTime));
+      }
+      else {
+        setPersonTime('');
+      }
 
-      setPersonTime(msToTime(workTime));
     } else {
       updateData = [ ...prevStorage, currentData ];
     }
