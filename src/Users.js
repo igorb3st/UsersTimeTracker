@@ -7,6 +7,8 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Typography from "@material-ui/core/Typography";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -30,12 +32,13 @@ function getStyles(name, personName, theme) {
   };
 }
 
-const SimpleSelect = () => {
+const Users = () => {
   const theme = useTheme();
   const { formControl, info } = useStyles(theme);
   const [ personName, setPersonName ] = useState([]);
   const [ personTime, setPersonTime ] = useState();
-  const [ users, setUser ] = useState([]);
+  const [ personId, setPersonId ] = useState();
+  const [ users, setUsers ] = useState([]);
 
   const msToTime = (duration) => {
     const seconds = parseInt((duration / 1000) % 60),
@@ -43,17 +46,18 @@ const SimpleSelect = () => {
       hours = parseInt((duration / (1000 * 60 * 60)) % 24);
 
     return `${hours}hrs :${minutes}min :${seconds}sec `;
-  }
+  };
 
   const handleChange = (event) => {
+    event.preventDefault();
+    let updateData = [];
     const { value } = event.target;
+    const getUserIndexbyName = users.findIndex((obj) => obj.name === value);
+    setPersonId(users[ getUserIndexbyName ].id);
     setPersonName(value);
     const currentTime = new Date().getTime();
-    let updateData = "";
-
     const prevStorage = JSON.parse(localStorage.getItem("user")) || [];
     const currentData = { name: value, time: currentTime };
-
     const objIndex = prevStorage.findIndex((obj) => obj.name === value);
     const rest = prevStorage.filter((obj) => obj.name !== value);
 
@@ -69,11 +73,9 @@ const SimpleSelect = () => {
         const workTime = Math.abs(prevStorage[ objIndex ].time - currentTime);
 
         setPersonTime(msToTime(workTime));
+      } else {
+        setPersonTime("");
       }
-      else {
-        setPersonTime('');
-      }
-
     } else {
       updateData = [ ...prevStorage, currentData ];
     }
@@ -85,41 +87,42 @@ const SimpleSelect = () => {
     const url = `https://jsonplaceholder.typicode.com/users`;
     axios(url)
       .then((res) => res.data)
-      .then((data) => setUser(data));
+      .then((data) => setUsers(data));
   }, []);
 
   return (
-    <div>
-      <FormControl className={ formControl }>
-        <InputLabel id="demo-simple-select-helper-label">USERS</InputLabel>
-        <Select
-          labelId="demo-simple-select-helper-label"
-          id="demo-simple-select-helper"
-          value={ personName }
-          onChange={ handleChange }
-        >
-          <MenuItem value="">
-            <em>None</em>
+    <FormControl className={ formControl }>
+      <InputLabel id="demo-simple-select-helper-label">USERS</InputLabel>
+      <Select
+        labelId="demo-simple-select-helper-label"
+        id="demo-simple-select-helper"
+        value={ personName }
+        onChange={ handleChange }
+      >
+        <MenuItem value="">
+          <em>None</em>
+        </MenuItem>
+        { users.map((user) => (
+          <MenuItem
+            onChange={ handleChange }
+            key={ user.id }
+            value={ user.name }
+            style={ getStyles(user.name, personName, theme) }
+          >
+            { user.name }
           </MenuItem>
-          { users.map((user) => (
-            <MenuItem
-              onChange={ handleChange }
-              key={ user.id }
-              value={ user.name }
-              style={ getStyles(user.name, personName, theme) }
-            >
-              { user.name }
-            </MenuItem>
-          )) }
-        </Select>
-        <FormHelperText>get data for the Some User</FormHelperText>
-        <Typography className={ info } gutterBottom>
-          Name: { personName }
-        </Typography>
-        <Typography gutterBottom>Work Time: { personTime }</Typography>
-      </FormControl>
-    </div>
+        )) }
+      </Select>
+      <FormHelperText>get data for the Some User</FormHelperText>
+      <Typography className={ info } gutterBottom>
+        Welcome : { personName }
+      </Typography>
+      <Typography gutterBottom>Your Work Time: { personTime }</Typography>
+      <Button variant="outlined" color="primary" size="medium">
+        <Link to={ `/${personId}` }>More Details</Link>
+      </Button>
+    </FormControl>
   );
 };
 
-export default SimpleSelect;
+export default Users;

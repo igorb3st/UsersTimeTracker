@@ -8,7 +8,8 @@
     "react-dom": "latest",
     "react": "latest",
     "@material-ui/core": "latest",
-    "axios": "latest"
+    "axios": "latest",
+    "react-router-dom": "latest"
   },
   "name": "lviv-demo-task",
   "version": "0.0.1",
